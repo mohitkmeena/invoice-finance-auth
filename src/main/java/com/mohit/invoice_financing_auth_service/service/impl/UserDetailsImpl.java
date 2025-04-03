@@ -3,9 +3,11 @@ package com.mohit.invoice_financing_auth_service.service.impl;
 import com.mohit.invoice_financing_auth_service.dto.LoginDto;
 import com.mohit.invoice_financing_auth_service.dto.ResponseDto;
 import com.mohit.invoice_financing_auth_service.dto.SignUpDto;
+import com.mohit.invoice_financing_auth_service.entity.RefreshToken;
 import com.mohit.invoice_financing_auth_service.entity.Role;
 import com.mohit.invoice_financing_auth_service.entity.User;
 import com.mohit.invoice_financing_auth_service.repository.UserRepository;
+import com.mohit.invoice_financing_auth_service.service.RefreshService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ public class UserDetailsImpl implements UserDetailsService {
     @Autowired private UserRepository userRepository;
     @Autowired private JwtServiceImpl jwtService;
     @Autowired private AuthenticationManager authenticationManager;
+    @Autowired private RefreshService refreshService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user=userRepository.findUser(username).orElseThrow(()->new UsernameNotFoundException("user not found with given email or phone number "+username));
@@ -46,6 +49,8 @@ public class UserDetailsImpl implements UserDetailsService {
                     .code("ALREADY_EXIST")
                     .build(), HttpStatus.BAD_REQUEST);
         }
+        RefreshToken rtoken= refreshService.createRefreshToken(signUpDto.getEmail());
+        String token=jwtService.generateToken(signUpDto.getEmail());
         signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
         User user= User.builder()
                 .email(signUpDto.getEmail())
@@ -57,20 +62,24 @@ public class UserDetailsImpl implements UserDetailsService {
         userRepository.save(user);
 
 
-        return  new ResponseEntity<>(ResponseDto
+          return new ResponseEntity<>(ResponseDto
                 .builder()
-                .message("user already exist,please try login")
-                .code("ALREADY_EXIST")
-                .build(), HttpStatus.BAD_REQUEST);
+                .message(token+ "  refresh token "+ rtoken.getToken())
+                .code("created successfully")
+                .build(),
+                HttpStatus.ACCEPTED
+        );
     }
     public ResponseEntity<ResponseDto> login(LoginDto loginDto){
-        String token=null;
+
         Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmailOrPhonenUmber(),loginDto.getPassword()));
         if(authentication.isAuthenticated()){
+            RefreshToken rtoken= refreshService.createRefreshToken(loginDto.getEmailOrPhonenUmber());
+            String token=jwtService.generateToken(loginDto.getEmailOrPhonenUmber());
             token=jwtService.generateToken(authentication.getName());
             return new ResponseEntity<>(ResponseDto
                     .builder()
-                    .message(token+ "  refresh token ")
+                    .message(token+ "  refresh token "+ rtoken.getToken())
                     .code("created successfully")
                     .build(),
                     HttpStatus.ACCEPTED
@@ -99,5 +108,8 @@ public class UserDetailsImpl implements UserDetailsService {
         }
         return checkByemail||checkByPhone;
 
+    }
+    public   String getUserIdByUsername(String username){
+        return userRepository.findByEmail(username).map(User::getEmail).orElse(null);
     }
 }
