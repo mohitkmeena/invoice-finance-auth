@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/password")
+@RequestMapping("/invoice/v1/password")
 public class PassswordController {
     @Autowired
     private ForgetPasswordService forgetPasswordSecvice;

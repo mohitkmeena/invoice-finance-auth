@@ -2,10 +2,7 @@ package com.mohit.invoice_financing_auth_service.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -15,6 +12,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 @Builder
 @Table(name = "refreshToken")
+@AllArgsConstructor
 public class RefreshToken {
     @Id
     @Column(name="refresht_id")

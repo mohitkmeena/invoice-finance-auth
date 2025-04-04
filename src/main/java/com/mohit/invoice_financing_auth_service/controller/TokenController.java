@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/token/")
+@RequestMapping("/invoice/v1/token/")
 public class TokenController {
     @Autowired
     private RefreshService refreshTokenService;
@@ -26,7 +26,7 @@ public class TokenController {
                 .map(refreshTokenService::validaRefreshToken)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String accessToken = jService.generateToken(user.());
+                    String accessToken = jService.generateToken(user.getEmail());
                     return ResponseDto.builder()
                             .message(accessToken+" "+refreshTokenRequestDTO.getToken())
                             .build();

@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "user")
-
+@AllArgsConstructor
 @Builder
 public class User {
     @Id

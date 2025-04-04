@@ -1,5 +1,6 @@
 package com.mohit.invoice_financing_auth_service.controller;
 
+import com.mohit.invoice_financing_auth_service.service.LoginSignupService;
 import com.mohit.invoice_financing_auth_service.service.impl.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/auth/v1/ping/")
+@RequestMapping("/invoice/v1/ping/")
 public class PingController {
     @Autowired
-    private UserDetailsImpl userDetailsService;
+    private LoginSignupService userDetailsService;
     @GetMapping("/")
     public ResponseEntity<String> ping(@RequestHeader("Authorization") String authHeader){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
