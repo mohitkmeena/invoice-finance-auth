@@ -44,17 +44,19 @@ public class LoginSignUpServiceImpl implements LoginSignupService {
                     .code("ALREADY_EXIST")
                     .build(), HttpStatus.BAD_REQUEST);
         }
-        RefreshToken rtoken= refreshService.createRefreshToken(signUpDto.getEmail());
-        String token=jwtService.generateToken(signUpDto.getEmail());
-        signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
         User user= User.builder()
                 .email(signUpDto.getEmail())
                 .password(signUpDto.getPassword())
                 .phoneNumber(signUpDto.getPhoneNumber())
                 .role(Role.valueOf(signUpDto.getRole().toUpperCase()))
                 .build();
-
         User user2= userRepository.save(user);
+        RefreshToken rtoken= refreshService.createRefreshToken(signUpDto.getEmail());
+        String token=jwtService.generateToken(signUpDto.getEmail());
+        signUpDto.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+
+
+
         if(user2.getRole().toString()=="COMPANY"){
             userProducer.sendCompanytoSave(userToUserEventDto(user2));
         }

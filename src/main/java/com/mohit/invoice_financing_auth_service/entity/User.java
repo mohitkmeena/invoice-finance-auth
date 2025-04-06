@@ -23,8 +23,7 @@ public class User {
     private String phoneNumber;
     private  String password;
     @Enumerated(EnumType.STRING)
-
-    @NotBlank(message = "role can't be null choose either company or investor")
+   // @NotBlank(message = "role can't be null choose either company or investor")
     private Role role;
 
 }

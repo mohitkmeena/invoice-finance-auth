@@ -25,6 +25,7 @@ public class UserProducer {
 
     public void sendCompanytoSave(UserEventDto userDto){
         Message<UserEventDto> message= MessageBuilder.withPayload(userDto).setHeader(KafkaHeaders.TOPIC, COMPANY_TOPIC_NAME).build();
+        System.out.println("message "+message.getPayload());
         template.send(message);
         System.out.println("user sent ");
 
