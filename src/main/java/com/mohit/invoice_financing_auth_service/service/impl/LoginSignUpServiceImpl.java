@@ -76,10 +76,10 @@ public class LoginSignUpServiceImpl implements LoginSignupService {
     @Override
     public ResponseEntity<ResponseDto> login(LoginDto loginDto){
 
-        Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmailOrPhonenUmber(),loginDto.getPassword()));
+        Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(),loginDto.getPassword()));
         if(authentication.isAuthenticated()){
-            RefreshToken rtoken= refreshService.createRefreshToken(loginDto.getEmailOrPhonenUmber());
-            String token=jwtService.generateToken(loginDto.getEmailOrPhonenUmber());
+            RefreshToken rtoken= refreshService.createRefreshToken(loginDto.getEmail());
+            String token=jwtService.generateToken(loginDto.getEmail());
             token=jwtService.generateToken(authentication.getName());
             return new ResponseEntity<>(ResponseDto
                     .builder()
